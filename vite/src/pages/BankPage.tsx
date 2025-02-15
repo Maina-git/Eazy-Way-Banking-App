@@ -16,7 +16,7 @@ interface Deposit{
 
 const BankPage: React.FC = () => {
 
-const userId=auth.currentUser.uid
+const userId=auth.currentUser?.uid
 
 
 const [name, setName]=useState("");

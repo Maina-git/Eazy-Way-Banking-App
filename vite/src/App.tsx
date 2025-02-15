@@ -1,13 +1,7 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route} from "react-router-dom"
-import SignIn from "./pages/SignIn"; 
-import BankPage from "./pages/BankPage";
-import WithDraw from "./pages/WithDraw";
-import Navbar from "./components/Navbar";
-import Loans from "./pages/Loans";
-import Transactions from "./pages/Transactions";
-import Logout from "./pages/Logout";
-
+//import { BrowserRouter as Router, Routes, Route} from "react-router-dom"
+import SignIn from "./pages/SignIn";
+import Home from "./pages/Home";
 
 
 
@@ -33,16 +27,7 @@ if(!isAuth){
 }
 return (
   <>
-  <Router>
-    <Navbar/>
-    <Routes>
-      <Route path="/bankpage" element={<BankPage/>}/>
-      <Route path="/withdraw" element={<WithDraw/>} />
-      <Route path="/loans" element={<Loans/>}/>
-      <Route path="/Transactions" element={<Transactions/>}/>
-      <Route path="/logout" element={<Logout/>}/>
-    </Routes>
-</Router>
+<Home/>
 </>
 )
 }
