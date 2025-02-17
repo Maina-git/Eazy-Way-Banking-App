@@ -27,3 +27,5 @@ const NavBar: React.FC<NavBarProps> = ({ NavItems, onBankClick }) => {
 };
 
 export default NavBar;
+
+

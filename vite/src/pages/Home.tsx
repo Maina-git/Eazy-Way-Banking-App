@@ -19,7 +19,7 @@ interface NavItem{
     path:JSX.Element
 }
 
-const Home = () => {
+const Home:React.FC = () => {
 const [bankItem, setBankItem]=useState<JSX.Element | null>(<BankPage/>)
   const NavItems:NavItem[]=[
     {
