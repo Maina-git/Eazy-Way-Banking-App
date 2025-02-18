@@ -1,6 +1,7 @@
 
 import React from 'react'
-import Navbar from '../components/articles/Navbar';
+//import Navbar from '../components/articles/SideBar';
+import SideBar from '../components/articles/SideBar';
 import BankFeed from '../components/Feed/BankFeed';
 import BankPage from './BankPage';
 import Transactions from './Transactions';
@@ -52,7 +53,7 @@ setBankItem(selectedBankItem);
   }
   return (
     <div  className="h-screen flex flex-row w-full">
-        <Navbar NavItems={NavItems} onBankClick={handleClick}/>
+        <SideBar NavItems={NavItems} onBankClick={handleClick}/>
         <BankFeed bankItem={bankItem}/>
     </div>
   )

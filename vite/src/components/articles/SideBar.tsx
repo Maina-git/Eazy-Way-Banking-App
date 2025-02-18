@@ -7,7 +7,7 @@ interface NavBarProps {
   onBankClick: (path: JSX.Element) => void;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ NavItems, onBankClick }) => {
+const SideBar: React.FC<NavBarProps> = ({ NavItems, onBankClick }) => {
   return (
     <div className="w-1/4 p-5 h-screen bg-blue-500 flex flex-col gap-6  left-0 top-0">
       <h1 className="text-white font-bold text-2xl my-6">EAZY WAY</h1>
@@ -26,6 +26,6 @@ const NavBar: React.FC<NavBarProps> = ({ NavItems, onBankClick }) => {
   );
 };
 
-export default NavBar;
+export default SideBar;
 
 
