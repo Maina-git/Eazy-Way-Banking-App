@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { AppContext } from '../context/Context';
+import { auth } from '../config/Firebase';
 
 const Wallet: React.FC = () => {
   const context = useContext(AppContext);
@@ -27,13 +28,14 @@ const Wallet: React.FC = () => {
           value={amount}
           onChange={(e) => setAmount(Math.max(0, Number(e.target.value)))}
           placeholder="Enter Amount"
-          className="border border-gray-300 rounded px-3 py-2 mt-2 w-full"
-        />
+          className="border border-gray-300 rounded px-3 py-2 mt-2 w-full"/>
         <button
           onClick={handleDeposit}
           className="mt-4 bg-blue-300 text-white py-2 px-5 w-full rounded hover:bg-blue-400">
           Deposit
         </button>
+          <p className="text-white mt-5">APP ID</p>
+        <span className="text-blue-500 text-xs p-1 rounded-xl bg-white mt-2">{auth.currentUser?.uid}</span>
       </div>
     </div>
   );

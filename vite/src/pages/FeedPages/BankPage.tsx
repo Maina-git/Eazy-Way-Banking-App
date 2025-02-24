@@ -1,6 +1,6 @@
 import React from 'react';
-import Wallet from '../components/wallet';
-import UserDetails from '../components/UserDetails';
+import Wallet from '../../components/wallet';
+import UserDetails from '../../components/UserDetails';
 
 
 const BankPage:React.FC = () => {

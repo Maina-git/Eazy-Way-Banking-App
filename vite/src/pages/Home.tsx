@@ -1,17 +1,17 @@
 
 import React from 'react'
-//import Navbar from '../components/articles/SideBar';
 import SideBar from '../components/articles/SideBar';
 import BankFeed from '../components/Feed/BankFeed';
-import BankPage from './BankPage';
-import Transactions from './Transactions';
+import BankPage from './FeedPages/BankPage';
+import Transactions from './FeedPages/Transactions';
 import Logout from './Logout';
-import Loans from './Loans';
+import Loans from './FeedPages/Loans';
 import { RiAccountCircleFill } from "react-icons/ri";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import { BsCurrencyExchange } from "react-icons/bs";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { useState } from 'react';
+import Notifications from './Notifications';
 
 interface NavItem{
     id:number,
@@ -21,6 +21,17 @@ interface NavItem{
 }
 
 const Home:React.FC = () => {
+
+  const [notifications, setNotifications]=useState<boolean>(false);
+
+  const toNotifications=()=>{
+    setNotifications(prev=>!prev);
+  }
+
+
+
+
+
 const [bankItem, setBankItem]=useState<JSX.Element | null>(<BankPage/>)
   const NavItems:NavItem[]=[
     {
@@ -30,19 +41,19 @@ const [bankItem, setBankItem]=useState<JSX.Element | null>(<BankPage/>)
       path:<BankPage/>
     },
     {
-      id:1,
+      id:2,
       title:"Transactions",
       icon:<BsCurrencyExchange/>,
       path:<Transactions/>
     },
     {
-      id:1,
+      id:3,
       title:"E Loans",
       icon:<FaMoneyBillTrendUp/>,
       path:<Loans/>
     },
     {
-      id:1,
+      id:4,
       title:"Logout",
       icon:<RiLogoutBoxRFill/>,
       path:<Logout/>
@@ -51,9 +62,13 @@ const [bankItem, setBankItem]=useState<JSX.Element | null>(<BankPage/>)
   const handleClick=(selectedBankItem:JSX.Element)=>{
 setBankItem(selectedBankItem);
   }
+
+
+if (notifications) return <Notifications toNotifications={toNotifications}/>
+
   return (
     <div  className="h-screen flex flex-row w-full">
-        <SideBar NavItems={NavItems} onBankClick={handleClick}/>
+        <SideBar NavItems={NavItems} onBankClick={handleClick}   toNotifications={toNotifications}/>
         <BankFeed bankItem={bankItem}/>
     </div>
   )
