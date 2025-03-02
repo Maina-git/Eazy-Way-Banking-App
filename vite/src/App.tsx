@@ -5,8 +5,12 @@ import Context from "./context/Context";
 
 const App: React.FC = () => {
   const [isAuth, setIsAuth] = useState<boolean>(
+    /*
+    localStorage.getItem("isAuth") === "true"
     
-    localStorage.getItem("isAuth") === "true");
+    */
+   false
+    );
 
 
   useEffect(() => {
@@ -19,9 +23,11 @@ const App: React.FC = () => {
   }
 
   return (
+    <div className="overflow-hidden">
     <Context>
       <Home />
     </Context>
+    </div>
   );
 };
 

@@ -3,6 +3,7 @@ import LoanPage from '../../components/LoanPage';
 import Loan from '../../components/Loan';
 
 
+
 const Loans:React.FC = () => {
   return (
 <div className="overflow-hidden overflow-y-scroll" style={{scrollbarWidth:"none"}}>
@@ -13,11 +14,7 @@ const Loans:React.FC = () => {
   )
 }
 
-
 export default Loans;
-
-
-
 
 
 

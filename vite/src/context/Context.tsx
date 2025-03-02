@@ -1,6 +1,6 @@
-import { createContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { 
-  collection, getDocs, addDoc, query, where, serverTimestamp, Timestamp, 
+  collection, getDocs, addDoc, query, where, serverTimestamp, Timestamp 
 } from "firebase/firestore";
 import { auth, db } from "../config/Firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -18,22 +18,35 @@ type Message = {
   userId: string;
 };
 
+type Loan = {
+  loanType: string;
+  id: string;
+  createdAt: Timestamp | null;
+};
+
 interface ContextProps {
   amount: number;
   recipientUid: string;
   setRecipientUid: React.Dispatch<React.SetStateAction<string>>;
   deposits: Deposit[];
   notification: boolean;
+  showPopup: boolean;
+  setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedLoan: string;
+  setSelectedLoan: React.Dispatch<React.SetStateAction<string>>;
   read: boolean;
   setRead: React.Dispatch<React.SetStateAction<boolean>>;
   readMessage: () => void;
   setNotification: React.Dispatch<React.SetStateAction<boolean>>;
   message: Message[];
   totalBalance: number;
+  handleLoanRequest: () => void;
   setAmount: React.Dispatch<React.SetStateAction<number>>;
   fetchDeposits: () => Promise<void>;
+  fetchLoans: () => Promise<void>;
   handleDeposit: () => Promise<void>;
   userId: string | null;
+  loan: Loan[];
 }
 
 export const AppContext = createContext<ContextProps | null>(null);
@@ -41,13 +54,15 @@ export const AppContext = createContext<ContextProps | null>(null);
 const ContextProvider = ({ children }: { children: ReactNode }) => {
   const [userId, setUserId] = useState<string | null>(null);
   const [deposits, setDeposits] = useState<Deposit[]>([]);
+  const [loan, setLoan] = useState<Loan[]>([]);
   const [totalBalance, setTotalBalance] = useState<number>(0);
   const [message, setMessage] = useState<Message[]>([]);
   const [notification, setNotification] = useState<boolean>(false);
   const [read, setRead] = useState<boolean>(false);
   const [recipientUid, setRecipientUid] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
-  const [balance, setBalance] = useState<number>(0);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [selectedLoan, setSelectedLoan] = useState<string>("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -93,7 +108,6 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
       setDeposits(depositList);
       const total = depositList.reduce((acc, deposit) => acc + Number(deposit.amount), 0);
       setTotalBalance(total);
-      setBalance(total); 
     } catch (err) {
       console.error("Error fetching deposits:", err);
     }
@@ -105,7 +119,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
       const q = query(collection(db, "users"), where("userId", "==", userId));
       const querySnapshot = await getDocs(q);
       const messageList: Message[] = querySnapshot.docs.map((doc) => ({
-        ...(doc.data() as Message), 
+        ...(doc.data() as Message),
         createdAt: doc.data().createdAt || null,
       }));
 
@@ -113,6 +127,21 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
       setNotification(true);
     } catch (err) {
       console.error("Error fetching messages:", err);
+    }
+  };
+
+  const fetchLoans = async () => {
+    if (!userId) return;
+    try {
+      const q = query(collection(db, "loans"), where("id", "==", userId)); 
+      const querySnapshot = await getDocs(q);
+      const loanList: Loan[] = querySnapshot.docs.map((doc) => ({
+        ...(doc.data() as Loan),
+        createdAt: doc.data().createdAt || null,
+      }));
+      setLoan(loanList);
+    } catch (err) {
+      console.error("Error fetching loans:", err);
     }
   };
 
@@ -125,11 +154,34 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
     if (userId) {
       fetchDeposits();
       fetchMessage();
+      fetchLoans(); 
     }
   }, [userId]);
 
-
-
+  const handleLoanRequest = async () => {
+    if (!selectedLoan) {
+      alert("Please select a loan type.");
+      return;
+    }
+    if (!userId) {
+      alert("User not authenticated");
+      return;
+    }
+    try {
+      await addDoc(collection(db, "loans"), {
+        loanType: selectedLoan,
+        id: userId, 
+        createdAt: serverTimestamp(), 
+      });
+      alert("Loan request recorded successfully!");
+      setShowPopup(false);
+      setNotification(true);
+      fetchLoans(); 
+    } catch (error) {
+      console.error("Error adding loan request: ", error);
+      alert("Failed to record loan request.");
+    }
+  };
 
   const contextValue: ContextProps = {
     amount,
@@ -137,26 +189,26 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
     setRecipientUid,
     deposits,
     read,
+    setSelectedLoan,
+    setShowPopup,
+    handleLoanRequest,
+    selectedLoan,
+    showPopup,
     setRead,
     readMessage,
     totalBalance,
     setAmount,
     fetchDeposits,
+    fetchLoans,
     handleDeposit,
     userId,
     message,
     notification,
     setNotification,
+    loan, 
   };
 
   return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
 };
 
 export default ContextProvider;
-
-
-
-
-
-
-

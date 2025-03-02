@@ -12,7 +12,7 @@ const UserDetails: React.FC = () => {
 
   return (
     <div
-      className="shadow-md w-auto mx-2 py-6 px-4 bg-white rounded-lg h-[50vh] overflow-y-scroll"
+      className="shadow-md w-auto mx-2 py-6 px-4 bg-gray-100 rounded-lg h-auto"
       style={{ scrollbarWidth: "none" }}
     >
       <h2 className="text-lg font-bold mb-4 text-gray-800">Your Deposits History</h2>

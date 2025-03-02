@@ -2,7 +2,7 @@ import React from 'react'
 
 const LogoutPage:React.FC = () => {
   return (
-    <div className="bg-blue-500 flex flex-col m-2 rounded-lg h-[50vh]">
+    <div className="bg-blue-500 flex flex-col m-1 rounded-lg h-[50vh]">
       <h1 className="text-white text-4xl p-5 font-bold">Eazy Way</h1>
     <p className="text-white p-5 text-xs font-bold">
     <b className="text-white font-bold text-3xl">Eazy Way App – Banking Made Simple!</b>  

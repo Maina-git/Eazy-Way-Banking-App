@@ -11,7 +11,7 @@ const context=useContext(AppContext);
 const {totalBalance}=context;
 
   return (
-    <div className="w-full bg-blue-500 rounded-lg m-2 p-5 shadow-lg">
+    <div className="w-auto bg-blue-500 rounded-lg m-1 p-5 shadow-lg">
       <h1 className="text-2xl font-bold text-white text-center mb-4">Peer-to-Peer Transfer</h1>
       <section className="bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-center">
         <div className="w-full md:w-1/2 flex flex-col items-center md:items-start">
