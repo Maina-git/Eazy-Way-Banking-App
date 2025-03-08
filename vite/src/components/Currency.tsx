@@ -4,7 +4,7 @@ const Currency: React.FC = () => {
   const [currency, setCurrency] = useState("USD");
 
   return (
-    <div className="w-auto m-2 bg-blue-500 p-5 rounded-lg shadow-md mt-6">
+    <div className="w-auto m-2  bg-gradient-to-r from-blue-200 to-blue-500   p-5 rounded-lg shadow-md mt-6">
       <h1 className="text-xl font-bold text-white text-center">Change Currency</h1>
 
       <div className="flex flex-col gap-4 mt-4">

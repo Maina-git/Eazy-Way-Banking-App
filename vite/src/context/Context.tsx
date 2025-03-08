@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { 
-  collection, getDocs, addDoc, query, where, serverTimestamp, Timestamp 
+  collection, getDocs, addDoc, query, where, serverTimestamp, Timestamp, updateDoc, doc 
 } from "firebase/firestore";
 import { auth, db } from "../config/Firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -27,6 +27,10 @@ type Loan = {
 interface ContextProps {
   amount: number;
   recipientUid: string;
+  bills: string;
+  billAmount: number;
+  setBills: React.Dispatch<React.SetStateAction<string>>;
+  setBillAmount: React.Dispatch<React.SetStateAction<number>>;
   setRecipientUid: React.Dispatch<React.SetStateAction<string>>;
   deposits: Deposit[];
   notification: boolean;
@@ -39,14 +43,18 @@ interface ContextProps {
   readMessage: () => void;
   setNotification: React.Dispatch<React.SetStateAction<boolean>>;
   message: Message[];
+  setMessage: React.Dispatch<React.SetStateAction<Message[]>>; 
   totalBalance: number;
-  handleLoanRequest: () => void;
+  handleLoanRequest: () => Promise<void>;
   setAmount: React.Dispatch<React.SetStateAction<number>>;
   fetchDeposits: () => Promise<void>;
   fetchLoans: () => Promise<void>;
+  fetchMessages: () => Promise<void>; 
   handleDeposit: () => Promise<void>;
+  handleBillPayment: () => Promise<void>;
   userId: string | null;
   loan: Loan[];
+  setLoan: React.Dispatch<React.SetStateAction<Loan[]>>;
 }
 
 export const AppContext = createContext<ContextProps | null>(null);
@@ -63,6 +71,8 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
   const [amount, setAmount] = useState<number>(0);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [selectedLoan, setSelectedLoan] = useState<string>("");
+  const [bills, setBills] = useState<string>("");
+  const [billAmount, setBillAmount] = useState<number>(0);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -89,7 +99,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
       });
       setNotification(true);
       setAmount(0);
-      fetchDeposits();
+      await fetchDeposits();
     } catch (err) {
       console.error("Error adding deposit:", err);
     }
@@ -113,7 +123,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const fetchMessage = async () => {
+  const fetchMessages = async () => {
     if (!userId) return;
     try {
       const q = query(collection(db, "users"), where("userId", "==", userId));
@@ -153,7 +163,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (userId) {
       fetchDeposits();
-      fetchMessage();
+      fetchMessages();
       fetchLoans(); 
     }
   }, [userId]);
@@ -183,32 +193,58 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const contextValue: ContextProps = {
-    amount,
-    recipientUid,
-    setRecipientUid,
-    deposits,
-    read,
-    setSelectedLoan,
-    setShowPopup,
-    handleLoanRequest,
-    selectedLoan,
-    showPopup,
-    setRead,
-    readMessage,
-    totalBalance,
-    setAmount,
-    fetchDeposits,
-    fetchLoans,
-    handleDeposit,
-    userId,
-    message,
-    notification,
-    setNotification,
-    loan, 
+  const handleBillPayment = async () => {
+    if (billAmount <= 0 || !bills) {
+      alert("Please enter valid Bill values");
+      return;
+    }
+    if (!userId) {
+      alert("User not authenticated");
+      return;
+    }
+
+    try {
+      const q = query(collection(db, "money"), where("userId", "==", userId));
+      const querySnapshot = await getDocs(q);
+      let depositDocId = "";
+      let totalBalanceFromDB = 0;
+
+      querySnapshot.forEach((doc) => {
+        totalBalanceFromDB += doc.data().amount;
+        depositDocId = doc.id;
+      });
+
+      if (billAmount > totalBalanceFromDB) {
+        alert("Insufficient balance");
+        return;
+      }
+
+      await addDoc(collection(db, "bills"), {
+        bills,
+        billAmount,
+        userId,
+        type: "bill payment",
+        createdAt: serverTimestamp(),
+      });
+
+      if (depositDocId) {
+        await updateDoc(doc(db, "money", depositDocId), {
+          amount: totalBalanceFromDB - billAmount,
+        });
+      }
+
+      setTotalBalance((prev) => prev - billAmount);
+      alert("Bill payment successful!");
+      fetchDeposits();
+    } catch (err) {
+      console.error("Error processing bill payment:", err);
+      alert("Failed to process bill payment.");
+    }
   };
 
-  return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
+  return <AppContext.Provider value={{ amount, recipientUid, bills, billAmount, setBills, setBillAmount, setRecipientUid, deposits, notification, showPopup, selectedLoan, read, message, totalBalance, userId, loan, setShowPopup, setSelectedLoan, setRead, setMessage, setLoan, setAmount, setNotification, readMessage, handleLoanRequest, fetchDeposits, fetchLoans, fetchMessages, handleDeposit, handleBillPayment }}>{children}</AppContext.Provider>;
 };
 
 export default ContextProvider;
+
+

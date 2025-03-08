@@ -15,8 +15,7 @@ const Loan = () => {
         { title: "Long Term Loan", amount: 4000000, period: "12 months" }].map((loan, index) => (
         <div
           key={index}
-          className="w-full md:w-1/3 bg-white shadow-lg rounded-2xl p-6 flex flex-col items-center text-center border border-gray-200 hover:shadow-xl transition-all"
-        >
+          className="w-full md:w-1/3 bg-white shadow-lg rounded-2xl p-6 flex flex-col items-center text-center border border-gray-200 hover:shadow-xl transition-all">
           <h1 className="text-xl font-semibold text-gray-700">{loan.title}</h1>
           <span className="text-3xl font-bold text-blue-600 mt-2">
             ${loan.amount.toLocaleString()}

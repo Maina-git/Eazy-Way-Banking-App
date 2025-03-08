@@ -38,13 +38,13 @@ const SignIn: React.FC<AuthProps> = ({ setIsAuth }) => {
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-full">
+
+
     
       <div className="flex flex-col justify-center items-center w-full md:w-1/2 p-6 text-center bg-white shadow-md rounded-lg mx-4 my-6 md:my-0 md:mx-0">
         <h1 className="text-4xl font-bold text-blue-500">Eazy Way</h1>
         <span className="text-sm text-blue-500 mt-2">Seamless Banking, Secure Future.</span>
-        
         <form onSubmit={handleSignUp} className="mt-6 w-full max-w-xs">
-      
         <div className="mb-4">
             <label className="block text-gray-600 text-left mb-1">Name</label>
             <input 
@@ -66,7 +66,6 @@ const SignIn: React.FC<AuthProps> = ({ setIsAuth }) => {
               placeholder="Enter your email" 
               required/>
           </div>
-
           <div className="mb-4 relative">
             <label className="block text-gray-600 text-left mb-1">Password</label>
             <input 
@@ -107,7 +106,7 @@ const SignIn: React.FC<AuthProps> = ({ setIsAuth }) => {
           </button>
         </form>
     </div>
-      <div className="hidden md:flex flex-col justify-center items-center w-1/2 h-full bg-gradient-to-r from-blue-500 to-blue-700 text-white p-6">
+      <div className="hidden md:flex flex-col justify-center items-center w-1/2 h-full bg-gradient-to-r from-blue-200 to-blue-500 text-white p-6">
         <p className="text-4xl md:text-[100px] font-bold text-center">Eazy Way</p>
       </div>
     </div>

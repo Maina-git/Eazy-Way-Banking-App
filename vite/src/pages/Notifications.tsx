@@ -21,8 +21,6 @@ const Notifications: React.FC<PropTypes> = ({ toNotifications }) => {
       <h2 className="text-xl font-bold text-center text-gray-700 mb-4">
         Notifications
       </h2>
-
-  
       {message && message.length > 0 ? (
         message.map((msg, index) => (
           <div key={index} className="p-3 bg-white shadow-md rounded-lg my-2">

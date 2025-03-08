@@ -16,7 +16,7 @@ const {notification}=useContext(AppContext);
 
 
   return (
-    <div className="w-1/4 p-5 m-1 rounded-lg h-screen bg-blue-500 flex flex-col gap-6  left-0 top-0">
+    <div className="w-1/4 p-5 m-1 rounded-lg h-screen bg-gradient-to-r from-blue-200 to-blue-500  flex flex-col gap-6  left-0 top-0">
      <div className="flex justify-between">
       <h1 className="text-white font-bold text-2xl my-2">EAZY WAY</h1>
       <div className="my-2 cursor-pointer" onClick={toNotifications}><IoNotifications className="text-white text-xl flex flex-row"/>  
