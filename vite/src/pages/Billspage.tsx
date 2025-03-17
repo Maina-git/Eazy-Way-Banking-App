@@ -1,44 +1,35 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
-import {
-  collection, getDocs, addDoc, query, where, serverTimestamp,
+import { 
+  collection, getDocs, addDoc, query, where, serverTimestamp, Timestamp, updateDoc, doc 
 } from "firebase/firestore";
 import { auth, db } from "../config/Firebase";
 import { onAuthStateChanged } from "firebase/auth";
-
 
 type Deposit = {
   name: string;
   amount: number;
   userId: string;
-  createdAt: any;
+  createdAt: Timestamp | null;
 };
 
 type Message = {
   name: string;
-  createdAt: any;
+  createdAt: Timestamp | null;
   userId: string;
 };
 
 type Loan = {
   loanType: string;
   id: string;
-  createdAt: any;
-};
-
-type Bill = {
-  billAmount: number;
-  bills: string;
-  createdAt: any;
-  type: string;
-  userId: string;
+  createdAt: Timestamp | null;
 };
 
 interface ContextProps {
   amount: number;
   recipientUid: string;
-  bills: Bill[]; 
+  bills: string;
   billAmount: number;
-  setBills: React.Dispatch<React.SetStateAction<Bill[]>>;
+  setBills: React.Dispatch<React.SetStateAction<string>>;
   setBillAmount: React.Dispatch<React.SetStateAction<number>>;
   setRecipientUid: React.Dispatch<React.SetStateAction<string>>;
   deposits: Deposit[];
@@ -50,19 +41,15 @@ interface ContextProps {
   read: boolean;
   setRead: React.Dispatch<React.SetStateAction<boolean>>;
   readMessage: () => void;
-  toBills: boolean;
-  setToBills: React.Dispatch<React.SetStateAction<boolean>>;
-  directToBills: () => void;
   setNotification: React.Dispatch<React.SetStateAction<boolean>>;
   message: Message[];
-  setMessage: React.Dispatch<React.SetStateAction<Message[]>>;
+  setMessage: React.Dispatch<React.SetStateAction<Message[]>>; 
   totalBalance: number;
   handleLoanRequest: () => Promise<void>;
   setAmount: React.Dispatch<React.SetStateAction<number>>;
   fetchDeposits: () => Promise<void>;
   fetchLoans: () => Promise<void>;
-  fetchMessages: () => Promise<void>;
-  fetchBills: () => Promise<void>;
+  fetchMessages: () => Promise<void>; 
   handleDeposit: () => Promise<void>;
   handleBillPayment: () => Promise<void>;
   userId: string | null;
@@ -84,9 +71,8 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
   const [amount, setAmount] = useState<number>(0);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [selectedLoan, setSelectedLoan] = useState<string>("");
-  const [bills, setBills] = useState<Bill[]>([]); 
+  const [bills, setBills] = useState<string>("");
   const [billAmount, setBillAmount] = useState<number>(0);
-  const [toBills, setToBills] = useState<boolean>(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -94,12 +80,6 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
     });
     return () => unsubscribe();
   }, []);
-
-
-
-  const directToBills = (): void => {
-    setToBills((prev) => !prev);
-  };
 
   const handleDeposit = async () => {
     if (amount <= 0) {
@@ -125,59 +105,6 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-
-
-
-
-
-  const handleBillPayment = async () => {
-    if (!userId) {
-      alert("User not authenticated");
-      return;
-    }
-    if (!bills || billAmount <= 0) {
-      alert("Invalid bill details");
-      return;
-    }
-    try {
-      await addDoc(collection(db, "bills"), {
-        bills,
-        billAmount,
-        userId,
-        createdAt: serverTimestamp(),
-      });
-      setNotification(true);
-      setBillAmount(0);
-      await fetchBills();
-    } catch (err) {
-      console.error("Error adding bill:", err);
-    }
-  };
-
-  
-
-
-
-  const fetchBills = async () => {
-    if (!userId) return;
-    try {
-      const q = query(collection(db, "bills"), where("userId", "==", userId));
-      const querySnapshot = await getDocs(q);
-      const billsList: Bill[] = querySnapshot.docs.map((doc) => ({
-        ...(doc.data() as Bill),
-        createdAt: doc.data().createdAt || null,
-      }));
-      setBills(billsList); 
-      setTotalBalance((prev) => prev - billsList.reduce((acc, bill) => acc + Number(bill.billAmount), 0));
-    } catch (err) {
-      console.error("Error fetching bills:", err);
-    }
-  };
-
-  
-
-
-
   const fetchDeposits = async () => {
     if (!userId) return;
     try {
@@ -187,6 +114,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
         ...(doc.data() as Deposit),
         createdAt: doc.data().createdAt || null,
       }));
+
       setDeposits(depositList);
       const total = depositList.reduce((acc, deposit) => acc + Number(deposit.amount), 0);
       setTotalBalance(total);
@@ -194,9 +122,6 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
       console.error("Error fetching deposits:", err);
     }
   };
-
-  
-
 
   const fetchMessages = async () => {
     if (!userId) return;
@@ -207,6 +132,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
         ...(doc.data() as Message),
         createdAt: doc.data().createdAt || null,
       }));
+
       setMessage(messageList);
       setNotification(true);
     } catch (err) {
@@ -214,53 +140,110 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const fetchLoans = async () => {
+    if (!userId) return;
+    try {
+      const q = query(collection(db, "loans"), where("id", "==", userId)); 
+      const querySnapshot = await getDocs(q);
+      const loanList: Loan[] = querySnapshot.docs.map((doc) => ({
+        ...(doc.data() as Loan),
+        createdAt: doc.data().createdAt || null,
+      }));
+      setLoan(loanList);
+    } catch (err) {
+      console.error("Error fetching loans:", err);
+    }
+  };
+
+  const readMessage = () => {
+    setRead(true);
+    setNotification(false);
+  };
+
   useEffect(() => {
     if (userId) {
       fetchDeposits();
       fetchMessages();
-      fetchBills();
+      fetchLoans(); 
     }
   }, [userId]);
 
-  return (
-    <AppContext.Provider
-      value={{
-        amount,
-        recipientUid,
+  const handleLoanRequest = async () => {
+    if (!selectedLoan) {
+      alert("Please select a loan type.");
+      return;
+    }
+    if (!userId) {
+      alert("User not authenticated");
+      return;
+    }
+    try {
+      await addDoc(collection(db, "loans"), {
+        loanType: selectedLoan,
+        id: userId, 
+        createdAt: serverTimestamp(), 
+      });
+      alert("Loan request recorded successfully!");
+      setShowPopup(false);
+      setNotification(true);
+      fetchLoans(); 
+    } catch (error) {
+      console.error("Error adding loan request: ", error);
+      alert("Failed to record loan request.");
+    }
+  };
+
+  const handleBillPayment = async () => {
+    if (billAmount <= 0 || !bills) {
+      alert("Please enter valid Bill values");
+      return;
+    }
+    if (!userId) {
+      alert("User not authenticated");
+      return;
+    }
+
+    try {
+      const q = query(collection(db, "money"), where("userId", "==", userId));
+      const querySnapshot = await getDocs(q);
+      let depositDocId = "";
+      let totalBalanceFromDB = 0;
+
+      querySnapshot.forEach((doc) => {
+        totalBalanceFromDB += doc.data().amount;
+        depositDocId = doc.id;
+      });
+
+      if (billAmount > totalBalanceFromDB) {
+        alert("Insufficient balance");
+        return;
+      }
+
+      await addDoc(collection(db, "bills"), {
         bills,
         billAmount,
-        setBills,
-        setBillAmount,
-        setRecipientUid,
-        deposits,
-        notification,
-        showPopup,
-        setShowPopup,
-        selectedLoan,
-        setSelectedLoan,
-        read,
-        setRead,
-        message,
-        setMessage,
-        totalBalance,
         userId,
-        loan,
-        setLoan,
-        setAmount,
-        setNotification,
-        fetchDeposits,
-        fetchMessages,
-        fetchBills,
-        handleBillPayment,
-        handleDeposit,
-        directToBills,
-        toBills,
-        setToBills,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
-  );
+        type: "bill payment",
+        createdAt: serverTimestamp(),
+      });
+
+      if (depositDocId) {
+        await updateDoc(doc(db, "money", depositDocId), {
+          amount: totalBalanceFromDB - billAmount,
+        });
+      }
+
+      setTotalBalance((prev) => prev - billAmount);
+      alert("Bill payment successful!");
+      fetchDeposits();
+    } catch (err) {
+      console.error("Error processing bill payment:", err);
+      alert("Failed to process bill payment.");
+    }
+  };
+
+  return <AppContext.Provider value={{ amount, recipientUid, bills, billAmount, setBills, setBillAmount, setRecipientUid, deposits, notification, showPopup, selectedLoan, read, message, totalBalance, userId, loan, setShowPopup, setSelectedLoan, setRead, setMessage, setLoan, setAmount, setNotification, readMessage, handleLoanRequest, fetchDeposits, fetchLoans, fetchMessages, handleDeposit, handleBillPayment }}>{children}</AppContext.Provider>;
 };
 
 export default ContextProvider;
+

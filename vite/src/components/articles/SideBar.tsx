@@ -23,7 +23,6 @@ const {notification}=useContext(AppContext);
       <span className={notification && `bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full`}>{notification ? 1 : null}</span>
       </div>
       </div>
-    
       <nav className="space-y-4">
         {NavItems.map((item) => (
           <div
