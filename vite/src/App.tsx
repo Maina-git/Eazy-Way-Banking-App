@@ -5,9 +5,8 @@ import Context from "./context/Context";
 
 const App: React.FC = () => {
   const [isAuth, setIsAuth] = useState<boolean>(
-    /*
+  /*
     localStorage.getItem("isAuth") === "true"
-    
     */
    false
     );

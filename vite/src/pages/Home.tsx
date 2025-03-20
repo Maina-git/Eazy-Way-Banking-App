@@ -1,4 +1,3 @@
-
 import React from 'react'
 import SideBar from '../components/articles/SideBar';
 import BankFeed from '../components/Feed/BankFeed';
@@ -23,12 +22,15 @@ interface NavItem{
 const Home:React.FC = () => {
 
   const [notifications, setNotifications]=useState<boolean>(false);
+  const [open, setOpen]=useState(false);
+
+  const openNavbar=()=>{
+    setOpen(prev=>!prev);
+  }
 
   const toNotifications=()=>{
     setNotifications(prev=>!prev);
   }
-
-
 
 
 
@@ -67,18 +69,13 @@ setBankItem(selectedBankItem);
 if (notifications) return <Notifications toNotifications={toNotifications}/>
 
   return (
-    <div  className="h-screen flex flex-row w-full">
-        <SideBar NavItems={NavItems} onBankClick={handleClick}   toNotifications={toNotifications}/>
-        <BankFeed bankItem={bankItem}/>
+    <div  className="flex-col md:h-screen md:flex md:flex-row w-full">
+        <SideBar open={open} setOpen={setOpen} NavItems={NavItems} onBankClick={handleClick}   toNotifications={toNotifications}/>
+        <BankFeed bankItem={bankItem}  openNavbar={openNavbar} open={open}/>
     </div>
   )
 }
 
 export default Home;
-
-
-
-
-
 
 

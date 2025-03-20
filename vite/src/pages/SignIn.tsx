@@ -5,6 +5,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../config/Firebase";
 import { collection } from "firebase/firestore";
+import { useEffect } from "react";
+import Landing from "./Landing";
 
 interface AuthProps {
   setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,6 +18,20 @@ const SignIn: React.FC<AuthProps> = ({ setIsAuth }) => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [show, setShow]=useState<boolean>(false);
+
+
+  useEffect(()=>{
+    const timer=setTimeout(()=>{
+    setShow(true);
+    }, 10000);
+    return ()=>clearTimeout(timer);
+    },[]);
+
+
+
+
+
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,12 +52,14 @@ const SignIn: React.FC<AuthProps> = ({ setIsAuth }) => {
     }
   };
 
+if (!show) return <Landing/>
+
   return (
     <div className="flex flex-col md:flex-row h-screen w-full">
 
 
     
-      <div className="flex flex-col justify-center items-center w-full md:w-1/2 p-6 text-center bg-white shadow-md rounded-lg mx-4 my-6 md:my-0 md:mx-0">
+      <div className="flex flex-col justify-center items-center w-auto md:w-1/2 p-6 text-center bg-white shadow-md rounded-lg mx-4 my-6 md:mx-0 md:my-0">
         <h1 className="text-4xl font-bold text-blue-500">Eazy Way</h1>
         <span className="text-sm text-blue-500 mt-2">Seamless Banking, Secure Future.</span>
         <form onSubmit={handleSignUp} className="mt-6 w-full max-w-xs">
@@ -106,7 +124,7 @@ const SignIn: React.FC<AuthProps> = ({ setIsAuth }) => {
           </button>
         </form>
     </div>
-      <div className="hidden md:flex flex-col justify-center items-center w-1/2 h-full bg-gradient-to-r from-blue-200 to-blue-500 text-white p-6">
+      <div className="hidden md:flex flex-col justify-center items-center w-1/2 h-full bg-gradient-to-r from-blue-400 to-blue-800 text-white p-6">
         <p className="text-4xl md:text-[100px] font-bold text-center">Eazy Way</p>
       </div>
     </div>

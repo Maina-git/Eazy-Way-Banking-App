@@ -20,7 +20,7 @@ const Transact: React.FC = () => {
   } = context;
 
   return (
-    <div className="flex flex-col items-center w-auto bg-gradient-to-r from-blue-200 to-blue-500 rounded-lg m-1 p-5 shadow-lg">
+    <div className="flex flex-col items-center w-auto bg-gradient-to-r from-blue-400 to-blue-700 rounded-lg m-1 p-5 shadow-lg">
       <h1 className="text-2xl font-bold text-white text-center mb-4">Bills Payment</h1>
       <section className="w-full bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-center">
         <div className="w-full md:w-1/2 flex flex-col items-center md:items-start">
@@ -79,10 +79,10 @@ const Transact: React.FC = () => {
                   </div>
                 ))
               ) : (
-                <p>No Bills yet</p>
+                <p className="text-gray-500 font-bold text-xs">No bills yet</p>
               )}
             </div>
-            <div className="w-full flex justify-between">
+            <div className="w-full m-5 flex justify-between">
               <button
                 className="bg-red-500 px-5 py-2 rounded-lg text-white font-bold text-xs"
                 onClick={directToBills}>

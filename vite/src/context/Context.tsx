@@ -20,6 +20,7 @@ type Message = {
 };
 
 type Loan = {
+  name:string,
   loanType: string;
   id: string;
   createdAt: any;
@@ -126,7 +127,22 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
   };
 
 
+const handleLoannRequets = async ()=>{
+  if(!userId) return;
+alert("hello world");
+  try{
+await addDoc(collection(db, "loans"), {
+  name:auth.currentUser?.displayName || "Anonymous",
+  createdAt:serverTimestamp(),
 
+})
+
+
+  }catch(err){
+    console.error(err);
+  }
+
+}
 
 
 
@@ -148,6 +164,7 @@ const ContextProvider = ({ children }: { children: ReactNode }) => {
       });
       setNotification(true);
       setBillAmount(0);
+      setBills("");
       await fetchBills();
     } catch (err) {
       console.error("Error adding bill:", err);

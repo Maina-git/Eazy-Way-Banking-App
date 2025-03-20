@@ -3,7 +3,7 @@ import React from 'react'
 
 const LoanPage:React.FC = () => {
   return (
-<div className="w-auto  m-1 rounded-xl  h-[50vh] bg-gradient-to-r from-blue-200 to-blue-500 gap-5 flex items-center justify-center flex-col">
+<div className="w-auto  m-1 rounded-xl  h-[50vh] bg-gradient-to-r from-blue-400 to-blue-700 gap-5 flex items-center justify-center flex-col">
 <h1 className="text-white font-bold text-6xl">E Loans</h1>
 
 <p className="text-white text-xs p-5 ">

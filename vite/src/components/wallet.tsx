@@ -12,7 +12,7 @@ const Wallet: React.FC = () => {
   const { amount, setAmount, handleDeposit, totalBalance } = context;
 
   return (
-    <div className="w-auto h-[50vh] bg-gradient-to-r from-blue-200 to-blue-500 flex justify-between rounded-lg p-5 m-1 shadow-md">
+    <div className="flex flex-col md:flex md:flex-row w-auto h-auto bg-gradient-to-r from-blue-400 to-blue-700 flex justify-between rounded-lg p-5 m-1 shadow-md">
       <div className="mt-4 flex flex-col gap-4">
         <h1 className="text-xl font-bold text-white">My Wallet</h1>
         <p className="text-lg font-semibold text-white">My Balance</p>

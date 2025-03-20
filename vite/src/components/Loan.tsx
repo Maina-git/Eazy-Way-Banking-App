@@ -3,9 +3,8 @@ import { useContext } from "react";
 import { AppContext } from "../context/Context";
 
 
-const Loan = () => {
+const Loan:React.FC = () => {
   const { showPopup, setShowPopup, selectedLoan, setSelectedLoan, handleLoanRequest }= useContext(AppContext);
-
 
 
   return (
@@ -23,8 +22,7 @@ const Loan = () => {
           <p className="text-gray-500 mt-1">Period: {loan.period}</p>
           <button
             className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-xl font-medium hover:bg-blue-700 transition"
-            onClick={() => setShowPopup(true)}
-          >
+            onClick={() => setShowPopup(true)}>
             Get Loan
           </button>
         </div>
