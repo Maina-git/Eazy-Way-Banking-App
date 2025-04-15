@@ -28,11 +28,6 @@ const SignIn: React.FC<AuthProps> = ({ setIsAuth }) => {
     return ()=>clearTimeout(timer);
     },[]);
 
-
-
-
-
-
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirm) {

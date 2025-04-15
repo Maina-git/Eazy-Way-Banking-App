@@ -8,9 +8,6 @@ const Currency: React.FC = () => {
       <h1 className="text-xl font-bold text-white text-center">Change Currency</h1>
 
       <div className="flex flex-col gap-4 mt-4">
-
-
-
         <label className="text-white font-semibold">Select Currency:</label>
         <select
           className="p-2 border border-gray-300 rounded-md"

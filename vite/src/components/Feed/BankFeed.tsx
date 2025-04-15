@@ -5,7 +5,7 @@ import { RiMenuFill } from "react-icons/ri";
 import { IoClose } from "react-icons/io5";
 
 interface BankFeedProps {
-  bankItem: JSX.Element;
+  bankItem:any;
   open: boolean;
   openNavbar: () => void;
 }
